@@ -1,0 +1,66 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import { allSites, bySlug, CATEGORY_META } from '../../lib/data'
+
+export async function getStaticPaths() {
+  return allSites.map((s) => ({ params: { slug: s.slug }, props: { site: s } }))
+}
+
+const { site } = Astro.props as { site: (typeof allSites)[number] }
+const catLabel = CATEGORY_META[site.category]?.label ?? site.category
+const backHref = site.category === 'agent-era-2026' ? '/' : `/${site.category}`
+---
+
+<BaseLayout title={`${site.name} — links.oriz.in`} description={site.why}>
+  <main class="site-detail">
+    <div class="breadcrumb">
+      <a href={backHref}>{catLabel}</a> ·
+      <span>{site.name}</span>
+    </div>
+
+    <h1 class="detail-title">{site.name}</h1>
+    <span class={`detail-tier tier-${site.tier}`}>{site.tier}</span>
+    {site.stack_match && <span class="stack-pick" style="margin-left: 0.5rem; vertical-align: middle;">Stack pick</span>}
+
+    <blockquote class="why">{site.why}</blockquote>
+
+    <p class="review-body">{site.review}</p>
+
+    <table class="meta">
+      <tbody>
+        <tr>
+          <td>URL</td>
+          <td><a href={site.url} rel="noopener noreferrer">{site.url}</a></td>
+        </tr>
+        <tr>
+          <td>Tier</td>
+          <td>{site.tier}</td>
+        </tr>
+        <tr>
+          <td>Relevance</td>
+          <td>{site.relevance_to_our_stack}</td>
+        </tr>
+        <tr>
+          <td>Last active signal</td>
+          <td>{site.last_active_signal}</td>
+        </tr>
+        <tr>
+          <td>Verified alive</td>
+          <td>{site.verified_alive ? 'yes' : 'no'}</td>
+        </tr>
+        <tr>
+          <td>Category</td>
+          <td><a href={backHref}>{catLabel}</a></td>
+        </tr>
+        {site.stack_match && (
+          <tr>
+            <td>Stack match</td>
+            <td>yes</td>
+          </tr>
+        )}
+      </tbody>
+    </table>
+
+    <a class="back-link" href={backHref}>← Back to {catLabel}</a>
+  </main>
+</BaseLayout>

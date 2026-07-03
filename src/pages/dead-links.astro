@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { deadLinks } from '../lib/data'
+---
+
+<BaseLayout title="The Graveyard — links.oriz.in" description="Dead links from the sdmg15/Best-websites-a-programmer-should-visit archive, memorialised.">
+  <main class="graveyard">
+    <h1>The Graveyard.</h1>
+    <p class="rip">
+      {deadLinks.length} links that used to feature in
+      <a href="https://github.com/sdmg15/Best-websites-a-programmer-should-visit" style="color: var(--accent);">sdmg15/Best-websites-a-programmer-should-visit</a>
+      but no longer resolve, redirect, or hold their old shape. Kept here as a memorial —
+      the internet forgets fast; a directory shouldn't.
+    </p>
+    <ul>
+      {deadLinks.map((u) => (
+        <li>{u}</li>
+      ))}
+    </ul>
+  </main>
+</BaseLayout>

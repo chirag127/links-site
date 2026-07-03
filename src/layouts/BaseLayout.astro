@@ -1,0 +1,115 @@
+---
+import Wordmark from '@chirag127/site-shell/components/Wordmark.astro'
+import Footer from '@chirag127/site-shell/components/Footer.astro'
+import { bunnyFontsCss } from '@chirag127/site-shell/bunny-fonts'
+import '../styles/global.css'
+
+interface Props {
+  title: string
+  description?: string
+}
+
+const { title, description = "The directory — 100+ curated 2026 dev sites, hand-picked and verified." } = Astro.props
+const fontsUrl = bunnyFontsCss({
+  fraunces: [400, 500, 600, 700],
+  inter: [400, 500, 600],
+  'jetbrains-mono': [400, 500],
+})
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <link rel="alternate" type="application/rss+xml" href="/feed.xml" />
+    <link rel="preconnect" href="https://fonts.bunny.net" />
+    <link rel="stylesheet" href={fontsUrl} />
+    <script is:inline>
+      const saved = localStorage.getItem('theme')
+      if (saved) document.documentElement.setAttribute('data-theme', saved)
+    </script>
+  </head>
+  <body>
+    <header class="site-header">
+      <Wordmark />
+      <div style="display:flex; gap: 0.75rem; align-items: center;">
+        <a class="icon-btn" href="/feed.xml" aria-label="RSS feed" title="RSS">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+        </a>
+        <button class="search-btn" onclick="document.getElementById('search-dialog')?.showModal()">
+          Search <kbd>⌘K</kbd>
+        </button>
+        <button id="theme-toggle" class="icon-btn" aria-label="Toggle theme">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <slot />
+
+    <Footer />
+
+    <dialog id="search-dialog" style="border:1px solid var(--rule); border-radius:8px; padding:0; width: 90%; max-width: 600px; background: var(--bg); color: var(--fg);">
+      <form method="dialog" style="padding: 1.5rem;">
+        <input id="search-input" type="search" placeholder="Search 100+ sites…" autofocus style="width:100%; padding: 0.75rem 1rem; font-size:1rem; background:var(--code-bg); border: 1px solid var(--rule); border-radius: 4px; color: var(--fg); font-family: var(--font-body);" />
+        <div id="search-results" style="margin-top: 1rem; max-height: 400px; overflow-y: auto;"></div>
+      </form>
+    </dialog>
+
+    <script>
+      document.getElementById('theme-toggle')?.addEventListener('click', () => {
+        const cur = document.documentElement.getAttribute('data-theme')
+        const next = cur === 'light' ? 'dark' : 'light'
+        document.documentElement.setAttribute('data-theme', next)
+        localStorage.setItem('theme', next)
+      })
+
+      window.addEventListener('keydown', (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+          e.preventDefault()
+          ;(document.getElementById('search-dialog') as HTMLDialogElement | null)?.showModal()
+        }
+        if (e.key === 'Escape') (document.getElementById('search-dialog') as HTMLDialogElement | null)?.close()
+      })
+
+      let searchIndex: any = null
+      let searchDocs: any[] = []
+      async function ensureIndex() {
+        if (searchIndex) return
+        const res = await fetch('/search-index.json')
+        searchDocs = await res.json()
+        const { default: FlexSearch } = await import('flexsearch')
+        searchIndex = new (FlexSearch as any).Document({
+          document: { id: 'slug', index: ['name', 'why', 'review', 'tags'] },
+          tokenize: 'forward',
+        })
+        for (const doc of searchDocs) searchIndex.add(doc)
+      }
+      const inp = document.getElementById('search-input') as HTMLInputElement | null
+      const out = document.getElementById('search-results')
+      inp?.addEventListener('input', async (e) => {
+        const q = (e.target as HTMLInputElement).value.trim()
+        if (!q) { if (out) out.innerHTML = ''; return }
+        await ensureIndex()
+        const hits = searchIndex.search(q, { limit: 10, enrich: true })
+        const seen = new Set<string>()
+        const results: any[] = []
+        for (const field of hits) for (const r of field.result) {
+          if (seen.has(r.id)) continue
+          seen.add(r.id)
+          const doc = searchDocs.find((d) => d.slug === r.id)
+          if (doc) results.push(doc)
+        }
+        if (out) out.innerHTML = results.slice(0, 10).map((r) =>
+          `<a href="/site/${r.slug}" style="display:block; padding:0.6rem 0.75rem; border-bottom:1px solid var(--rule); text-decoration:none; color:inherit;">
+            <div style="font-weight:600; font-family: var(--font-head);">${r.name}</div>
+            <div style="font-size:0.8125rem; color:var(--muted); margin-top:0.15em;">${r.why || ''}</div>
+          </a>`
+        ).join('') || '<div style="padding:0.5rem; color:var(--muted);">No results.</div>'
+      })
+    </script>
+  </body>
+</html>

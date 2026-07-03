@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import CategoryView from '../components/CategoryView.astro'
+import { allSites } from '../lib/data'
+
+const total = allSites.length
+---
+
+<BaseLayout title="links.oriz.in — The Directory">
+  <main class="directory" style="padding-bottom: 1rem;">
+    <h1 class="hero-title">The Directory.</h1>
+    <p class="hero-sub">
+      {total} hand-picked, 2026-verified dev sites. Curated, tiered, and reviewed —
+      like a magazine that respects your attention.
+    </p>
+  </main>
+
+  <CategoryView active="agent-era-2026" />
+</BaseLayout>

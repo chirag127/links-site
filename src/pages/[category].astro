@@ -1,0 +1,18 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import CategoryView from '../components/CategoryView.astro'
+import { categoryList, CATEGORY_META } from '../lib/data'
+
+export async function getStaticPaths() {
+  return categoryList()
+    .filter((c) => c !== 'agent-era-2026')
+    .map((c) => ({ params: { category: c }, props: { category: c } }))
+}
+
+const { category } = Astro.props as { category: string }
+const label = CATEGORY_META[category]?.label ?? category
+---
+
+<BaseLayout title={`${label} — links.oriz.in`} description={CATEGORY_META[category]?.blurb}>
+  <CategoryView active={category} />
+</BaseLayout>
