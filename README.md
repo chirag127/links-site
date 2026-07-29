@@ -1,6 +1,11 @@
 # links-site
 
-Astro source for [links.oriz.in](https://links.oriz.in) — 100+ hand-picked, 2026-verified dev sites, presented as a curated editorial directory.
+[![Stars](https://img.shields.io/github/stars/chirag127/links-site?style=flat-square)](https://github.com/chirag127/links-site/stargazers)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](./LICENSE)
+
+Astro source for **[links.oriz.in](https://links.oriz.in)** — 100+ hand-picked, 2026-verified dev sites, presented as a curated editorial directory.
+
+**Live:** https://links.oriz.in
 
 ## Stack
 
@@ -37,6 +42,8 @@ pnpm dev
 ```bash
 pnpm deploy   # astro build + wrangler pages deploy dist
 ```
+
+Auto-deploys to Cloudflare Pages (`links-oriz-in`) on push to `main` via `.github/workflows/publish.yml`.
 
 ## License
 
