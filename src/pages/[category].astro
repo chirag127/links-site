@@ -13,6 +13,6 @@ const { category } = Astro.props as { category: string }
 const label = CATEGORY_META[category]?.label ?? category
 ---
 
-<BaseLayout title={`${label} — links.oriz.in`} description={CATEGORY_META[category]?.blurb}>
+<BaseLayout title={`${label} — The Field Ledger`} description={CATEGORY_META[category]?.blurb}>
   <CategoryView active={category} />
 </BaseLayout>

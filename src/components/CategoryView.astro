@@ -1,5 +1,11 @@
 ---
-import { categoryList, CATEGORY_META, sitesForCategory, allSites, type SiteWithCategory } from '../lib/data'
+import {
+  categoryList,
+  CATEGORY_META,
+  sitesForCategory,
+  plateNumber,
+  type SiteWithCategory,
+} from '../lib/data'
 
 interface Props {
   active: string
@@ -8,81 +14,91 @@ const { active } = Astro.props
 const cats = categoryList()
 const sites = sitesForCategory(active)
 const meta = CATEGORY_META[active] || { label: active, blurb: '' }
+const num = plateNumber(active)
 ---
 
-<nav class="category-tabs" aria-label="Categories">
-  <div class="tabs-inner">
+<nav class="plate-nav" aria-label="Plates">
+  <div class="plate-nav-inner">
     {cats.map((c) => (
       <a
-        class="tab"
-        href={c === cats[0] && c === 'agent-era-2026' ? '/' : `/${c}`}
+        class="plate-tab"
+        href={c === 'agent-era-2026' ? '/' : `/${c}`}
         aria-current={c === active ? 'page' : undefined}
       >
+        <span class="pt-num">{plateNumber(c)}</span>
         {(CATEGORY_META[c]?.label) || c}
       </a>
     ))}
   </div>
 </nav>
 
-<main class="directory">
-  <h2 class="section-title">
+<header class="plate-head">
+  <div class="plate-numeral" aria-hidden="true">{num}</div>
+  <h2>
     {meta.label}
-    <span class="section-count">{sites.length} sites</span>
+    <span class="plate-count">{sites.length} specimens</span>
   </h2>
-  {meta.blurb && <p class="section-blurb">{meta.blurb}</p>}
+  {meta.blurb && <p class="plate-blurb">{meta.blurb}</p>}
+</header>
 
-  <div class="filter-row" id="filter-row" data-category={active}>
-    <button class="filter-chip" data-filter="tier" data-value="free" aria-pressed="false">Free</button>
-    <button class="filter-chip" data-filter="tier" data-value="signup" aria-pressed="false">Signup</button>
-    <button class="filter-chip" data-filter="tier" data-value="freemium" aria-pressed="false">Freemium</button>
-    <button class="filter-chip" data-filter="stack" data-value="1" aria-pressed="false">★ Stack pick</button>
-    <button class="filter-chip" data-filter="rel" data-value="high" aria-pressed="false">High relevance</button>
-  </div>
+<div class="filter-row" id="filter-row" data-category={active}>
+  <span class="filter-legend">Key</span>
+  <button class="filter-chip" data-filter="tier" data-value="free" aria-pressed="false">Free</button>
+  <button class="filter-chip" data-filter="tier" data-value="signup" aria-pressed="false">Signup</button>
+  <button class="filter-chip" data-filter="tier" data-value="freemium" aria-pressed="false">Freemium</button>
+  <button class="filter-chip" data-filter="stack" data-value="1" aria-pressed="false">✦ Stack pick</button>
+  <button class="filter-chip" data-filter="rel" data-value="high" aria-pressed="false">High relevance</button>
+</div>
 
-  <div class="review-grid" id="review-grid">
-    {sites.map((s: SiteWithCategory) => (
-      <a
-        class="review-card"
-        href={`/site/${s.slug}`}
-        data-tier={s.tier}
-        data-stack={s.stack_match ? '1' : '0'}
-        data-rel={s.relevance_to_our_stack}
-      >
-        <span class={`review-tier tier-${s.tier}`}>{s.tier}</span>
-        {s.stack_match && <span class="stack-pick">Stack pick</span>}
-        <h3 class="review-title">{s.name}</h3>
-        <p class="review-text">{s.review}</p>
-        <div class="review-url">{s.url.replace(/^https?:\/\//, '')}</div>
-      </a>
-    ))}
-  </div>
-</main>
+<div class="specimen-grid" id="specimen-grid">
+  {sites.map((s: SiteWithCategory, i: number) => (
+    <a
+      class="specimen"
+      href={`/site/${s.slug}`}
+      data-tier={s.tier}
+      data-stack={s.stack_match ? '1' : '0'}
+      data-rel={s.relevance_to_our_stack}
+    >
+      <button
+        class="press-btn"
+        type="button"
+        data-slug={s.slug}
+        aria-pressed="false"
+        aria-label={`Press ${s.name} into field notebook`}
+        title="Press into field notebook"
+      >❦</button>
+      <span class="spec-plateno">{num} · {String(i + 1).padStart(2, '0')}</span>
+      <h3 class="spec-name">{s.name}</h3>
+      <div class="spec-classline">
+        <span class={`tier tier-${s.tier}`}>{s.tier}</span>
+        {s.stack_match && <span class="stack-pick">stack</span>}
+        {s.relevance_to_our_stack === 'high' && <span class="rel-high">high rel.</span>}
+      </div>
+      <p class="spec-review">{s.review}</p>
+      <div class="spec-url">{s.url.replace(/^https?:\/\//, '')}</div>
+    </a>
+  ))}
+</div>
 
 <script>
   const chips = document.querySelectorAll<HTMLButtonElement>('.filter-chip')
-  const cards = document.querySelectorAll<HTMLAnchorElement>('.review-card')
+  const cards = document.querySelectorAll<HTMLElement>('.specimen')
   const active: Record<string, Set<string>> = { tier: new Set(), stack: new Set(), rel: new Set() }
-
   function apply() {
     for (const card of cards) {
-      const tier = card.dataset.tier || ''
-      const stack = card.dataset.stack || '0'
-      const rel = card.dataset.rel || ''
-      const okTier = active.tier.size === 0 || active.tier.has(tier)
-      const okStack = active.stack.size === 0 || active.stack.has(stack)
-      const okRel = active.rel.size === 0 || active.rel.has(rel)
-      ;(card as HTMLElement).style.display = okTier && okStack && okRel ? '' : 'none'
+      const okTier = active.tier.size === 0 || active.tier.has(card.dataset.tier || '')
+      const okStack = active.stack.size === 0 || active.stack.has(card.dataset.stack || '0')
+      const okRel = active.rel.size === 0 || active.rel.has(card.dataset.rel || '')
+      card.style.display = okTier && okStack && okRel ? '' : 'none'
     }
   }
-
   chips.forEach((chip) => {
     chip.addEventListener('click', () => {
       const key = chip.dataset.filter as keyof typeof active
       const val = chip.dataset.value as string
       const pressed = chip.getAttribute('aria-pressed') === 'true'
       chip.setAttribute('aria-pressed', pressed ? 'false' : 'true')
-      if (pressed) active[key].delete(val)
-      else active[key].add(val)
+      if (pressed) active[key].delete(val); else active[key].add(val)
       apply()
     })
   })

@@ -56,4 +56,26 @@ export function categoryList(): string[] {
   return [...CATEGORY_ORDER.filter((c) => categories[c]), ...extras]
 }
 
+const ROMAN = ['0', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII']
+// Categories are a real curated sequence → each is a numbered PLATE in the ledger.
+export function plateNumber(cat: string): string {
+  const idx = categoryList().indexOf(cat)
+  return idx < 0 ? '—' : (ROMAN[idx + 1] ?? String(idx + 1))
+}
+
+// Editorial featured specimens — the plates that most define the collection.
+export const featured: SiteWithCategory[] = allSites
+  .filter((s) => s.stack_match && s.relevance_to_our_stack === 'high')
+  .slice(0, 4)
+
+export const TIER_LEGEND: { key: Site['tier']; label: string; gloss: string }[] = [
+  { key: 'free', label: 'Free', gloss: 'open habitat — no gate, no card' },
+  { key: 'signup', label: 'Signup', gloss: 'account to observe; still free' },
+  { key: 'freemium', label: 'Freemium', gloss: 'free tier, paid canopy above' },
+]
+
+export function tierIndex(t: Site['tier']): number {
+  return TIER_LEGEND.findIndex((x) => x.key === t)
+}
+
 export type { Site, SiteWithCategory }

@@ -1,19 +1,82 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro'
 import CategoryView from '../components/CategoryView.astro'
-import { allSites } from '../lib/data'
+import { allSites, featured, TIER_LEGEND, categoryList } from '../lib/data'
 
 const total = allSites.length
+const plates = categoryList().length
+const alive = allSites.filter((s) => s.verified_alive).length
 ---
 
-<BaseLayout title="links.oriz.in — The Directory">
-  <main class="directory" style="padding-bottom: 1rem;">
-    <h1 class="hero-title">The Directory.</h1>
-    <p class="hero-sub">
-      {total} hand-picked, 2026-verified dev sites. Curated, tiered, and reviewed —
-      like a magazine that respects your attention.
+<BaseLayout title="The Field Ledger — links.oriz.in">
+  <section class="hero-plate" aria-labelledby="ledger-title">
+    <svg class="frame" preserveAspectRatio="none" aria-hidden="true">
+      <rect class="outer" x="6" y="6" width="calc(100% - 12px)" height="calc(100% - 12px)" />
+      <rect class="inner" x="14" y="14" width="calc(100% - 28px)" height="calc(100% - 28px)" />
+    </svg>
+
+    <p class="plate-eyebrow">
+      <span>Plate 00</span>
+      <span class="sep">·</span>
+      <span>Genus <span class="genus">developer-web</span></span>
+      <span class="sep">·</span>
+      <span>Pressed MMXXVI</span>
     </p>
-  </main>
+
+    <h1 class="hero-title" id="ledger-title">The Field <em>Ledger</em>.</h1>
+
+    <p class="hero-thesis">
+      Not a link dump. A <strong>catalogue</strong> — every specimen of the developer web
+      hand-collected, classified by habitat, tiered by how it lets you in, and
+      verified still <strong>alive</strong> in the field this year. Dead specimens
+      are kept too, pressed in the herbarium of lost links.
+    </p>
+
+    <dl class="hero-meta">
+      <div>
+        <dt>Specimens catalogued</dt>
+        <dd class="num">{total}</dd>
+      </div>
+      <div>
+        <dt>Plates</dt>
+        <dd class="num">{plates}</dd>
+      </div>
+      <div>
+        <dt>Verified alive</dt>
+        <dd class="num">{alive}</dd>
+      </div>
+      <div>
+        <dt>Field year</dt>
+        <dd>2026</dd>
+      </div>
+    </dl>
+  </section>
+
+  <section class="tier-key" aria-label="Tier key">
+    {TIER_LEGEND.map((t) => (
+      <div class="key-item" data-tier={t.key}>
+        <span class="key-glyph">{t.label}</span>
+        <div>
+          <div class="key-label">{t.label}</div>
+          <p class="key-gloss">{t.gloss}</p>
+        </div>
+      </div>
+    ))}
+  </section>
+
+  {featured.length > 0 && (
+    <section class="featured" aria-labelledby="featured-rubric">
+      <h2 class="rubric" id="featured-rubric">Type specimens — the editor's plates</h2>
+      <div class="featured-grid">
+        {featured.map((s) => (
+          <a class="featured-card" href={`/site/${s.slug}`}>
+            <h3 class="fc-name">{s.name}</h3>
+            <p class="fc-why">{s.why}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
 
   <CategoryView active="agent-era-2026" />
 </BaseLayout>
