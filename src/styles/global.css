@@ -171,6 +171,16 @@ a { color: inherit; }
   transition: background 150ms var(--ease);
 }
 .nb-btn:hover { background: color-mix(in srgb, var(--verdigris) 22%, transparent); }
+.signin-link {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--sepia);
+  text-decoration: none;
+  transition: color 150ms var(--ease);
+}
+.signin-link:hover { color: var(--verdigris); }
 .nb-count {
   font-family: var(--font-mono);
   font-size: 0.7rem;

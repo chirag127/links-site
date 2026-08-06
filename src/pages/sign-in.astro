@@ -1,0 +1,67 @@
+---
+/*
+ * /sign-in — the dedicated sign-in surface for The Field Ledger. Mounts a Clerk
+ * <SignIn> card (one provider). Every specimen and dead-link record is public;
+ * this page only opens a session for the field notebook (pressed specimens).
+ */
+import BaseLayout from '../layouts/BaseLayout.astro'
+import SignInCard from '../components/SignInCard.tsx'
+---
+
+<BaseLayout
+  title="Sign in — The Field Ledger"
+  description="Sign in to oriz. One account works across every oriz site. Every specimen in the ledger stays public and open."
+  hideAuthIsland={true}
+>
+  <main class="signin-plate">
+    <p class="plate-eyebrow">
+      <a href="/">The Field Ledger</a>
+      <span class="sep">·</span>
+      <span>Access</span>
+    </p>
+    <h1>Sign in.</h1>
+    <p class="lede">
+      One sign-in works across every oriz site. The ledger is always free — sign in only to
+      press specimens into your own field notebook.
+    </p>
+    <div class="signin-mount">
+      <SignInCard client:only="react" />
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .signin-plate {
+    max-width: 640px;
+    margin-inline: auto;
+    padding: 3rem 1.4rem 5rem;
+  }
+  .plate-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--sepia);
+    display: flex;
+    gap: 0.5rem;
+    align-items: baseline;
+    margin: 0 0 0.75rem;
+  }
+  .plate-eyebrow a { color: var(--verdigris); text-decoration: none; }
+  .plate-eyebrow .sep { color: var(--rule-ink); }
+  h1 {
+    font-family: var(--font-head);
+    color: var(--ink);
+    margin: 0 0 0.75rem;
+  }
+  .lede {
+    font-family: var(--font-body);
+    color: var(--sepia);
+    max-width: 52ch;
+    margin: 0 0 2rem;
+  }
+  .signin-mount {
+    display: flex;
+    justify-content: center;
+  }
+</style>

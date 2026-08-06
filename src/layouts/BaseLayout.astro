@@ -7,11 +7,14 @@ import '../styles/global.css'
 interface Props {
   title: string
   description?: string
+  /** Suppress the header Clerk island (used on /sign-in — one provider per page). */
+  hideAuthIsland?: boolean
 }
 
 const {
   title,
   description = 'The Field Ledger — 111 curated 2026 developer sites, pressed, classified, and verified alive.',
+  hideAuthIsland = false,
 } = Astro.props
 
 const fonts =
@@ -46,7 +49,8 @@ const fonts =
         <button id="theme-toggle" class="icon-btn" type="button" aria-label="Toggle day / herbarium-night">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         </button>
-        <ClerkIsland client:only="react" />
+        <a class="signin-link" href="/sign-in/">Sign in</a>
+        {!hideAuthIsland && <ClerkIsland client:only="react" />}
       </div>
     </header>
 
