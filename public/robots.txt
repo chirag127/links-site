@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://links.oriz.in/sitemap-index.xml

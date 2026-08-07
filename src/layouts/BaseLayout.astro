@@ -13,12 +13,25 @@ interface Props {
 
 const {
   title,
-  description = 'The Field Ledger — 111 curated 2026 developer sites, pressed, classified, and verified alive.',
+  description = 'The Field Ledger — 111 hand-curated 2026 developer sites, classified by habitat, tiered by access, verified alive. Free, no signup, no ads.',
   hideAuthIsland = false,
 } = Astro.props
 
 const fonts =
   'https://fonts.bunny.net/css?family=dm-serif-display:400,400i|spectral:400,400i,600|space-mono:400,700'
+
+const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://links.oriz.in').href
+const ogImage = new URL('/og.png', Astro.site ?? 'https://links.oriz.in').href
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'The Field Ledger — links.oriz.in',
+  url: 'https://links.oriz.in/',
+  description,
+  inLanguage: 'en',
+  isAccessibleForFree: true,
+  offers: { '@type': 'Offer', price: 0, priceCurrency: 'USD' },
+}
 ---
 
 <!doctype html>
@@ -28,6 +41,19 @@ const fonts =
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <title>{title}</title>
+    <link rel="canonical" href={canonical} />
+    <meta name="robots" content="index, follow" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:site_name" content="The Field Ledger" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
     <link rel="alternate" type="application/rss+xml" href="/feed.xml" />
     <link rel="preconnect" href="https://fonts.bunny.net" crossorigin />
     <link rel="stylesheet" href={fonts} />
@@ -49,7 +75,6 @@ const fonts =
         <button id="theme-toggle" class="icon-btn" type="button" aria-label="Toggle day / herbarium-night">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         </button>
-        <a class="signin-link" href="/sign-in/">Sign in</a>
         {!hideAuthIsland && <ClerkIsland client:only="react" />}
       </div>
     </header>
