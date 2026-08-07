@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro'
 import CategoryView from '../components/CategoryView.astro'
+import ToolFinder from '../components/ToolFinder.tsx'
 import { allSites, featured, TIER_LEGEND, categoryList } from '../lib/data'
 
 const total = allSites.length
@@ -62,6 +63,15 @@ const alive = allSites.filter((s) => s.verified_alive).length
         </div>
       </div>
     ))}
+  </section>
+
+  <section class="finder-plate" aria-labelledby="finder-rubric">
+    <h2 class="rubric" id="finder-rubric">The Diviner — describe your need, get specimens</h2>
+    <p class="finder-lede">
+      A field-guide librarian reads your need against the catalogue and points to the
+      likeliest plates. Optional; the collection stands without it.
+    </p>
+    <ToolFinder client:visible />
   </section>
 
   {featured.length > 0 && (

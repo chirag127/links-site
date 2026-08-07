@@ -633,6 +633,111 @@ body.notebook-on .press-btn { display: inline-flex; }
   background: color-mix(in srgb, var(--vermilion) 12%, transparent);
 }
 
+/* ---------- The Diviner (optional AI tool-finder) ---------- */
+.finder-plate {
+  max-width: var(--max-w);
+  margin: 0 auto clamp(3rem, 7vw, 5rem);
+  padding: 0 clamp(1rem, 4vw, 2rem);
+}
+.finder-lede {
+  color: var(--sepia);
+  font-style: italic;
+  font-size: 1.02rem;
+  max-width: 42rem;
+  margin: -0.6rem 0 1.4rem;
+}
+.finder-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+.finder-input {
+  flex: 1 1 18rem;
+  padding: 0.75rem 1rem;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--ink);
+  background: var(--panel);
+  border: 1px solid var(--rule-ink);
+  border-radius: 2px;
+}
+.finder-input::placeholder { color: color-mix(in srgb, var(--sepia) 80%, transparent); }
+.finder-go {
+  padding: 0.75rem 1.3rem;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ground);
+  background: var(--verdigris);
+  border: 1px solid var(--verdigris);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background 150ms var(--ease);
+}
+.finder-go:hover:not(:disabled) { background: var(--verdigris-2); }
+.finder-go:disabled { opacity: 0.5; cursor: default; }
+
+.finder-examples {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0;
+  margin: 1rem 0 0;
+}
+.finder-examples button {
+  padding: 0.32em 0.75em;
+  border: 1px dashed var(--rule-ink);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--sepia);
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  transition: border-color 150ms var(--ease), color 150ms var(--ease);
+}
+.finder-examples button:hover { border-color: var(--verdigris); color: var(--ink); }
+
+.finder-note {
+  margin: 1rem 0 0;
+  color: var(--sepia);
+  font-style: italic;
+  font-size: 0.95rem;
+}
+
+.finder-hits {
+  list-style: none;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+.finder-hit {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1rem 1.1rem;
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--verdigris);
+  border-radius: 2px;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 200ms var(--ease), border-color 200ms var(--ease);
+}
+.finder-hit:hover { transform: translateY(-2px); border-color: var(--verdigris); }
+.finder-hit .fh-name { font-family: var(--font-head); font-size: 1.25rem; line-height: 1.1; }
+.finder-hit .fh-why { font-size: 0.9rem; color: var(--sepia); }
+.finder-hit .fh-url {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.04em;
+  color: var(--rule-ink);
+  word-break: break-all;
+}
+
 /* ---------- Site detail (specimen sheet) ---------- */
 .specimen-sheet {
   max-width: 46rem;
